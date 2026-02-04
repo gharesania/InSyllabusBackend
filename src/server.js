@@ -8,7 +8,7 @@ const connectDB = require('./config/db');
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Import Routes
+// Import Routes for 
 const universityRoutes = require("./routes/universityRoute");
 
 // Connect database

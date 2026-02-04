@@ -8,6 +8,7 @@ router.post("/", universityController.createUniversity);
 
 // Read
 router.get("/", universityController.getAllUniversities);
+
 router.get("/:id", universityController.getUniversityById);
 
 // Update

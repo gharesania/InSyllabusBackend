@@ -46,32 +46,6 @@ const getAllUniversities = async (req, res) => {
   }
 };
 
-const getUniversityById = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const university = await University.findById(id);
-    if (!university) {
-      return res.status(404).json({
-        success: false,
-        message: "University not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "University fetched successfully",
-      data: university,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch university",
-      error: error.message,
-    });
-  }
-};
-
 const updateUniversity = async (req, res) => {
   try {
     const { id } = req.params;
@@ -124,6 +98,32 @@ const deleteUniversity = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to delete university",
+      error: error.message,
+    });
+  }
+};
+
+const getUniversityById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const university = await University.findById(id);
+    if (!university) {
+      return res.status(404).json({
+        success: false,
+        message: "University not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "University fetched successfully",
+      data: university,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch university",
       error: error.message,
     });
   }
