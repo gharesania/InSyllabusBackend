@@ -10,6 +10,8 @@ const port = process.env.PORT || 5000;
 
 // Import Routes for 
 const universityRoutes = require("./routes/universityRoute");
+const programRoutes = require("./routes/programRoutes");
+
 
 // Connect database
 connectDB();
@@ -23,6 +25,8 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 // Routes
 app.use("/api/universities", universityRoutes);
+app.use("/api/programs", programRoutes);
+
 
 
 app.listen(port, () => {
