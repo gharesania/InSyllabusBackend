@@ -14,7 +14,7 @@ exports.protect = async (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       success: false,
-      message: "Not authorized, token missing",
+      message: "Not authorized, token missing authMidd",
     });
   }
 
@@ -26,7 +26,7 @@ exports.protect = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "User no longer exists",
+        message: "User no longer exists authMidd",
       });
     }
 
@@ -36,7 +36,7 @@ exports.protect = async (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: "Invalid or expired token",
+      message: "Invalid or expired token authMidd",
     });
   }
 };

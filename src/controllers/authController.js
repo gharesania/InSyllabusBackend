@@ -30,7 +30,7 @@ exports.register = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "User already exists",
+        message: "User already exists -am",
       });
     }
 
@@ -47,13 +47,13 @@ exports.register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "User registered successfully",
+      message: "User registered successfully -am",
       userId: user._id,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Registration failed",
+      message: "Registration failed -am",
       error: error.message,
     });
   }
@@ -70,7 +70,7 @@ exports.login = async (req, res) => {
     if (!user || !user.isActive) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials or blocked account",
+        message: "Invalid credentials or blocked account -am",
       });
     }
 
@@ -78,7 +78,7 @@ exports.login = async (req, res) => {
     if (user.lockUntil && user.lockUntil > Date.now()) {
       return res.status(403).json({
         success: false,
-        message: "Account locked due to multiple failed attempts",
+        message: "Account locked due to multiple failed attempts -am",
       });
     }
 
@@ -95,7 +95,7 @@ exports.login = async (req, res) => {
 
       return res.status(401).json({
         success: false,
-        message: "Incorrect password",
+        message: "Incorrect password -am",
       });
     }
 
@@ -112,7 +112,7 @@ exports.login = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Login successful",
+      message: "Login successful -am",
       accessToken,
       refreshToken,
       user: {
@@ -124,7 +124,7 @@ exports.login = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Login failed",
+      message: "Login failed -am",
       error: error.message,
     });
   }
@@ -142,12 +142,12 @@ exports.logout = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Logged out successfully",
+      message: "Logged out successfully -am",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Logout failed",
+      message: "Logout failed -am",
       error: error.message,
     });
   }
@@ -166,7 +166,7 @@ exports.getProfile = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Profile fetch failed",
+      message: "Profile fetch failed -am",
     });
   }
 };
@@ -180,7 +180,7 @@ exports.refreshToken = async (req, res) => {
     if (!refreshToken) {
       return res.status(401).json({
         success: false,
-        message: "No refresh token provided",
+        message: "No refresh token provided -am",
       });
     }
 
@@ -191,7 +191,7 @@ exports.refreshToken = async (req, res) => {
     if (!user || user.refreshToken !== refreshToken) {
       return res.status(403).json({
         success: false,
-        message: "Invalid refresh token",
+        message: "Invalid refresh token -am",
       });
     }
 
@@ -204,7 +204,7 @@ exports.refreshToken = async (req, res) => {
   } catch (error) {
     res.status(403).json({
       success: false,
-      message: "Token expired or invalid",
+      message: "Token expired or invalid -am",
     });
   }
 };
