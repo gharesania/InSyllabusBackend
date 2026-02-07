@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const { protect } = require("../middlewares/authMiddleware");
-
 const {
   addToCart,
   getCart,
@@ -10,16 +8,18 @@ const {
   clearCart,
 } = require("../controllers/cartController");
 
-// Add course to cart
+const { protect } = require("../middlewares/authMiddleware");
+
+// Add subject
 router.post("/add", protect, addToCart);
 
-// Get logged-in user's cart
+// Get cart
 router.get("/", protect, getCart);
 
-// Remove course from cart
-router.delete("/remove/:courseId", protect, removeFromCart);
+// Remove subject
+router.delete("/remove/:subjectId", protect, removeFromCart);
 
-// Clear cart (after payment)
+// Clear cart
 router.delete("/clear", protect, clearCart);
 
 module.exports = router;

@@ -1,13 +1,12 @@
 const Cart = require("../models/Cart");
-const Course = require("../models/Course");
+const Subject = require("../models/Subject");
 
-//calculate Pricing
+// Pricing Calculator
 
 const calculatePricing = (cart, discountPercent = 0) => {
   const totalAmount = cart.items.reduce((sum, item) => sum + item.price, 0);
 
   const discountAmount = Math.round((totalAmount * discountPercent) / 100);
-
   const payableAmount = totalAmount - discountAmount;
 
   cart.pricing.totalAmount = totalAmount;
@@ -16,18 +15,31 @@ const calculatePricing = (cart, discountPercent = 0) => {
   cart.pricing.payableAmount = payableAmount;
 };
 
-//Add course to cart
+// Add Subject to Cart
 
 exports.addToCart = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { courseId } = req.body;
+    const { subjectId } = req.body;
 
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
+    // 1. Validate subject
+    const subject = await Subject.findOne({
+      _id: subjectId,
+      status: "Active",
+      type: "Paid",
+    });
+
+    if (!subject) {
+      return res.status(404).json({ message: "Subject not found" });
     }
 
+    if (subject.price === 0) {
+      return res
+        .status(400)
+        .json({ message: "Free subjects do not require cart" });
+    }
+
+    // 2. Find or create cart
     let cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
@@ -38,29 +50,30 @@ exports.addToCart = async (req, res) => {
       });
     }
 
-    // Prevent duplicate course
+    // 3. Prevent duplicate
     const alreadyAdded = cart.items.find(
-      (item) => item.course.toString() === courseId,
+      (item) => item.subject.toString() === subjectId,
     );
 
     if (alreadyAdded) {
-      return res.status(400).json({ message: "Course already in cart" });
+      return res.status(400).json({ message: "Subject already in cart" });
     }
 
+    // 4. Add subject
     cart.items.push({
-      course: course._id,
-      courseName: course.title,
-      price: course.price,
+      subject: subject._id,
+      subjectName: subject.name, // ✅ FIXED
+      price: subject.price,
     });
 
-    // Apply default discount (example: 25%)
+    // 5. Pricing
     calculatePricing(cart, 25);
 
     await cart.save();
 
     res.status(200).json({
       success: true,
-      message: "Course added to cart",
+      message: "Subject added to cart",
       cart,
     });
   } catch (error) {
@@ -68,18 +81,11 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-//Get user cart
+// Get User Cart
 
 exports.getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user.id });
-
-    if (!cart) {
-      return res.status(200).json({
-        success: true,
-        cart: null,
-      });
-    }
 
     res.status(200).json({
       success: true,
@@ -90,29 +96,28 @@ exports.getCart = async (req, res) => {
   }
 };
 
-//Remove course from cart
+// Remove Subject
+
 exports.removeFromCart = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const { courseId } = req.params;
+    const { subjectId } = req.params;
 
-    const cart = await Cart.findOne({ user: userId });
+    const cart = await Cart.findOne({ user: req.user.id });
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
 
     cart.items = cart.items.filter(
-      (item) => item.course.toString() !== courseId,
+      (item) => item.subject.toString() !== subjectId,
     );
 
-    // Recalculate pricing after removal
     calculatePricing(cart, cart.pricing.discountPercent);
 
     await cart.save();
 
     res.status(200).json({
       success: true,
-      message: "Course removed from cart",
+      message: "Subject removed from cart",
       cart,
     });
   } catch (error) {
@@ -120,7 +125,7 @@ exports.removeFromCart = async (req, res) => {
   }
 };
 
-// Clear cart (after payment success)
+// Clear Cart
 
 exports.clearCart = async (req, res) => {
   try {

@@ -2,20 +2,20 @@ const mongoose = require("mongoose");
 
 const cartItemSchema = new mongoose.Schema(
   {
-    course: {
+    subject: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+      ref: "Subject",
       required: true,
     },
 
-    courseName: {
+    subjectName: {
       type: String,
-      required: true, // for faster UI rendering
+      required: true,
     },
 
     price: {
       type: Number,
-      required: true, // ₹999
+      required: true,
     },
   },
   { _id: false },
@@ -27,7 +27,7 @@ const cartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Auth",
       required: true,
-      unique: true, // one cart per user
+      unique: true,
     },
 
     items: [cartItemSchema],
@@ -35,22 +35,19 @@ const cartSchema = new mongoose.Schema(
     pricing: {
       totalAmount: {
         type: Number,
-        default: 0, // 2997
+        default: 0,
       },
-
       discountPercent: {
         type: Number,
-        default: 0, // 25
+        default: 0,
       },
-
       discountAmount: {
         type: Number,
-        default: 0, // 749
+        default: 0,
       },
-
       payableAmount: {
         type: Number,
-        default: 0, // 2245
+        default: 0,
       },
     },
 
