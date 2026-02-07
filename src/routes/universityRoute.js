@@ -1,20 +1,44 @@
 const express = require("express");
+//const router = express.Router();
+
+const {
+  createUniversity,
+  getAllUniversities,
+  getUniversityById,
+  updateUniversity,
+  deleteUniversity,
+} = require("../controllers/universityController");
+const { protect } = require("../middlewares/authMiddleware");
+const { authorizeRoles } = require("../middlewares/roleMiddleware");
+
 const router = express.Router();
-
-const universityController = require("../controllers/universityController");
-
 // Create
-router.post("/", universityController.createUniversity);
+router.post(
+  "/",
+  protect,
+  authorizeRoles("Admin", "Employee"),
+  createUniversity,
+);
 
 // Read
-router.get("/", universityController.getAllUniversities);
+router.get("/", getAllUniversities);
 
-router.get("/:id", universityController.getUniversityById);
+router.get("/:id", getUniversityById);
 
 // Update
-router.put("/:id", universityController.updateUniversity);
+router.put(
+  "/:id",
+  protect,
+  authorizeRoles("Admin", "Employee"),
+  updateUniversity,
+);
 
 // Delete
-router.delete("/:id", universityController.deleteUniversity);
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("Admin", "Employee"),
+  deleteUniversity,
+);
 
 module.exports = router;
